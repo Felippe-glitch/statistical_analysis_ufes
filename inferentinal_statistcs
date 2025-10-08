@@ -1,0 +1,182 @@
+#%%
+# Numéricas → ANOVA
+# Categóricas → Qui-quadrado
+
+import pandas as pd
+from scipy.stats import f_oneway, chi2_contingency
+
+baep = pd.read_excel('BANCOS/BAEPENDI_PADRAO.xlsx')
+elsa = pd.read_excel('BANCOS/ELSA_PADRAO.xlsx')
+indios = pd.read_excel('BANCOS/INDIOS_PADRAO.xlsx')
+mon = pd.read_excel('BANCOS/MONICA_PADRAO.xlsx')
+
+baep['POPULACAO'] = 'BAEPENDI'
+elsa['POPULACAO'] = 'ELSA'
+indios['POPULACAO'] = 'INDIOS'
+mon['POPULACAO'] = 'MONICA'
+
+df = pd.concat([baep, elsa, indios, mon], ignore_index=True)
+
+numericas = ['IDADE', 'VOP', 'PAM', 'PAS', 'PAD']
+categoricas = ['SEXO', 'HAS', 'DM', 'TABAGISMO', 'DILISPIDEMIA', 'FATOR_RISCO', 'ETNIA', 'OBESIDADE']
+
+resultados = []
+
+for var in numericas:
+    grupos = [g[var].dropna() for _, g in df.groupby('POPULACAO')]
+    if all(len(g) > 1 for g in grupos):
+        stat, p = f_oneway(*grupos)
+        medias = df.groupby('POPULACAO')[var].mean().to_dict()
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Numérica',
+            'Estatística_F': stat,
+            'p-valor': p,
+            'Significativo (p<0.05)': p < 0.05,
+            'Medias_Populacao': medias
+        })
+    else:
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Numérica',
+            'Estatística_F': None,
+            'p-valor': None,
+            'Significativo (p<0.05)': None,
+            'Medias_Populacao': None
+        })
+
+for var in categoricas:
+    tabela = pd.crosstab(df[var], df['POPULACAO'])
+    if tabela.shape[0] > 1 and tabela.shape[1] > 1:
+        chi2, p, dof, expected = chi2_contingency(tabela)
+        if (expected < 5).any():
+            print(f"Atenção: Frequência esperada <5 para variável {var}. p-valor pode não ser confiável.")
+        proporcoes = tabela.div(tabela.sum(axis=0), axis=1).to_dict()
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Categórica',
+            'Estatística_F': chi2,
+            'p-valor': p,
+            'Significativo (p<0.05)': p < 0.05,
+            'Proporcoes_Populacao': proporcoes
+        })
+    else:
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Categórica',
+            'Estatística_F': None,
+            'p-valor': None,
+            'Significativo (p<0.05)': None,
+            'Proporcoes_Populacao': None
+        })
+
+resultados_df = pd.DataFrame(resultados)
+
+pd.set_option('display.max_columns', None)
+print(resultados_df)
+
+# resultados_df.to_excel('p_valores_anova_quadrado.xlsx', index=False)
+
+#%%
+# Numéricas → Kruskal-Wallis
+# Categóricas → Qui-quadrado
+
+from scipy.stats import kruskal, chi2_contingency
+
+baep = pd.read_excel('BANCOS/BAEPENDI_PADRAO.xlsx')
+elsa = pd.read_excel('BANCOS/ELSA_PADRAO.xlsx')
+indios = pd.read_excel('BANCOS/INDIOS_PADRAO.xlsx')
+mon = pd.read_excel('BANCOS/MONICA_PADRAO.xlsx')
+
+baep['POPULACAO'] = 'BAEPENDI'
+elsa['POPULACAO'] = 'ELSA'
+indios['POPULACAO'] = 'INDIOS'
+mon['POPULACAO'] = 'MONICA'
+
+df = pd.concat([baep, elsa, indios, mon], ignore_index=True)
+
+numericas = ['IDADE', 'VOP', 'PAM', 'PAS', 'PAD']
+categoricas = ['SEXO', 'HAS', 'DM', 'TABAGISMO', 'DILISPIDEMIA', 'FATOR_RISCO', 'ETNIA', 'OBESIDADE']
+
+resultados = []
+
+for var in numericas:
+    grupos = [g[var].dropna() for _, g in df.groupby('POPULACAO')]
+    if all(len(g) > 1 for g in grupos):
+        stat, p = kruskal(*grupos)
+        medianas = df.groupby('POPULACAO')[var].median().to_dict()
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Numérica',
+            'Estatística_H': stat,
+            'p-valor': p,
+            'Significativo (p<0.05)': p < 0.05,
+            'Medianas_Populacao': medianas
+        })
+    else:
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Numérica',
+            'Estatística_H': None,
+            'p-valor': None,
+            'Significativo (p<0.05)': None,
+            'Medianas_Populacao': None
+        })
+
+for var in categoricas:
+    tabela = pd.crosstab(df[var], df['POPULACAO'])
+    if tabela.shape[0] > 1 and tabela.shape[1] > 1:
+        chi2, p, dof, expected = chi2_contingency(tabela)
+        if (expected < 5).any():
+            print(f"Atenção: Frequência esperada <5 para variável {var}. p-valor pode não ser confiável.")
+        proporcoes = tabela.div(tabela.sum(axis=0), axis=1).to_dict()
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Categórica',
+            'Estatística_H': chi2,
+            'p-valor': p,
+            'Significativo (p<0.05)': p < 0.05,
+            'Proporcoes_Populacao': proporcoes
+        })
+    else:
+        resultados.append({
+            'Variável': var,
+            'Tipo': 'Categórica',
+            'Estatística_H': None,
+            'p-valor': None,
+            'Significativo (p<0.05)': None,
+            'Proporcoes_Populacao': None
+        })
+
+resultados_df = pd.DataFrame(resultados)
+
+pd.set_option('display.max_columns', None)
+print(resultados_df)
+
+# resultados_df.to_excel('p_valores_completo.xlsx', index=False)
+
+#%%
+from statsmodels.stats.proportion import proportions_ztest
+from itertools import combinations
+
+categoricas = ['SEXO', 'HAS', 'DM', 'TABAGISMO', 'DILISPIDEMIA', 'FATOR_RISCO', 'ETNIA', 'OBESIDADE']
+
+for var in categoricas:
+    print(f"\nComparações par a par para {var}:")
+    pop_groups = df['POPULACAO'].unique()
+    for g1, g2 in combinations(pop_groups, 2):
+        contagem = df[df['POPULACAO'].isin([g1, g2])].groupby('POPULACAO')[var].sum().values
+        nobs = df[df['POPULACAO'].isin([g1, g2])].groupby('POPULACAO')[var].count().values
+        stat, p = proportions_ztest(count=contagem, nobs=nobs)
+        print(f"{g1} vs {g2} -> p-valor: {p:.4f}")
+
+#%%
+import scikit_posthocs as sp
+
+numericas = ['IDADE', 'VOP', 'PAM', 'PAS', 'PAD']
+
+for var in numericas:
+    data = df[[var, 'POPULACAO']].dropna()
+    dunn = sp.posthoc_dunn(data, val_col=var, group_col='POPULACAO', p_adjust='bonferroni')
+    print(f"\nPost-hoc Dunn para {var} (p-valor ajustado):")
+    print(dunn)
