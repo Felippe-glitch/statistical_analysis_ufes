@@ -1,9 +1,12 @@
-#%%
 # Numéricas → ANOVA
 # Categóricas → Qui-quadrado
 
 import pandas as pd
 from scipy.stats import f_oneway, chi2_contingency
+import scikit_posthocs as sp
+from statsmodels.stats.proportion import proportions_ztest
+from itertools import combinations
+from scipy.stats import kruskal
 
 baep = pd.read_excel('BANCOS/BAEPENDI_PADRAO.xlsx')
 elsa = pd.read_excel('BANCOS/ELSA_PADRAO.xlsx')
@@ -77,11 +80,12 @@ print(resultados_df)
 
 # resultados_df.to_excel('p_valores_anova_quadrado.xlsx', index=False)
 
-#%%
+
+
+
+# --
 # Numéricas → Kruskal-Wallis
 # Categóricas → Qui-quadrado
-
-from scipy.stats import kruskal, chi2_contingency
 
 baep = pd.read_excel('BANCOS/BAEPENDI_PADRAO.xlsx')
 elsa = pd.read_excel('BANCOS/ELSA_PADRAO.xlsx')
@@ -155,9 +159,10 @@ print(resultados_df)
 
 # resultados_df.to_excel('p_valores_completo.xlsx', index=False)
 
-#%%
-from statsmodels.stats.proportion import proportions_ztest
-from itertools import combinations
+
+
+
+# --
 
 categoricas = ['SEXO', 'HAS', 'DM', 'TABAGISMO', 'DILISPIDEMIA', 'FATOR_RISCO', 'ETNIA', 'OBESIDADE']
 
@@ -170,8 +175,10 @@ for var in categoricas:
         stat, p = proportions_ztest(count=contagem, nobs=nobs)
         print(f"{g1} vs {g2} -> p-valor: {p:.4f}")
 
-#%%
-import scikit_posthocs as sp
+# --
+
+
+
 
 numericas = ['IDADE', 'VOP', 'PAM', 'PAS', 'PAD']
 
