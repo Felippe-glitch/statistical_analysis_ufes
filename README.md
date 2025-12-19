@@ -25,7 +25,7 @@ O foco central é a análise estatística e a aplicação de equações para o e
 | Arquivo | Tipo | Descrição |
 | :--- | :---: | :--- |
 | `inferential_statistics.py` | 🐍 Script | **Análises estatísticas inferenciais.**<br>Inclui testes como Qui-Quadrado, ANOVA, Kruskal–Wallis e Post-hoc. |
-| `aplicacao_equacoes.ipynb` | 📓 Notebook | **Aplicação de modelos.**<br>Utilizado para testar equações da literatura da UFES e estimar a VOP nas populações estudadas. |
+| `aplicacao_equacoes.ipynb` | 📓 Notebook | **Aplicação de modelos.**<br>Utilizado para testar equações de predição do VOP da UFES e Europa nas populações estudadas. |
 
 ---
 
