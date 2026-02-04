@@ -22,10 +22,14 @@ O foco central é a análise estatística e a aplicação de equações para o e
 
 ## 📁 Estrutura do Repositório
 
+## 📁 Estrutura do Repositório
+
 | Arquivo | Tipo | Descrição |
 | :--- | :---: | :--- |
-| `inferential_statistics.py` | 🐍 Script | **Análises estatísticas inferenciais.**<br>Inclui testes como Qui-Quadrado, ANOVA, Kruskal–Wallis e Post-hoc. |
-| `aplicacao_equacoes.ipynb` | 📓 Notebook | **Aplicação de modelos.**<br>Utilizado para testar equações de predição do VOP da UFES e Europa nas populações estudadas. |
+| `inferential_statistics.py` | 🐍 Script | **Análises estatísticas inferenciais.**<br>Inclui comparações entre populações para variáveis numéricas e categóricas (ANOVA, Qui-quadrado, testes par a par e ajustes para múltiplas comparações). |
+| `avaliacao_desempenho_equacoes_preditivas_vop.ipynb` | 📓 Notebook | **Avaliação de modelos preditivos de VOP.**<br>Aplica equações da UFES e da Europa, calcula métricas de desempenho (R², RMSE, ICC) e gera gráficos de comparação entre valores reais e preditos. |
+| `analise_residuos.ipynb` | 📓 Notebook | **Análise de resíduos dos modelos.**<br>Gera gráficos de dispersão e distribuição dos erros para avaliar viés, variabilidade e adequação das equações preditivas. |
+
 
 ---
 
