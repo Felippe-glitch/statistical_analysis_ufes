@@ -20,7 +20,6 @@ O foco central é a análise estatística e a aplicação de equações para o e
 
 ---
 
-## 📁 Estrutura do Repositório
 
 ## 📁 Estrutura do Repositório
 
